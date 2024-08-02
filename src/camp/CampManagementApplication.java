@@ -190,6 +190,7 @@ public class CampManagementApplication {
                 System.out.println("현재까지 고른 과목 => 필수과목 : (" + mandatoryCount + ")" + mandatoryArray + ", 선택과목 (" + choiceCount + ")" + choiceArray);
                 System.out.println("(" + subject.getSubjectType() + ") [" + min + "/" + max + "] " + subjectName + "를(을) 수강하시겠습니까? (0 : no / 1: yes)");
 
+
                 int input = sc.nextInt();
                 if (input == 1) {
                     if (subject.getSubjectType().equals("MANDATORY")) {
