@@ -4,9 +4,7 @@ import camp.model.Score;
 import camp.model.Student;
 import camp.model.Subject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Notification
@@ -171,9 +169,55 @@ public class CampManagementApplication {
         String studentName = sc.next();
         // 기능 구현 (필수 과목, 선택 과목)
 
-        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
+        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
+        boolean flag = true;
         // 기능 구현
-        System.out.println("수강생 등록 성공!\n");
+        while(flag) {
+            System.out.println("필수과목 3개 / 선택과목 2개를 반드시 선택해야 합니다.");
+
+            int mandatoryCount = 0;
+            int choiceCount = 0;
+            int min = 1;
+            int max = 5;
+
+            ArrayList<String> mandatoryArray = new ArrayList<>();
+            ArrayList<String> choiceArray = new ArrayList<>();
+
+            for (Subject subject : subjectStore) {
+
+                String subjectName = subject.getSubjectName();
+
+                System.out.println(STR."현재까지 고른 과목 => 필수과목 : (\{mandatoryCount}) \{mandatoryArray}, 선택과목 (\{choiceCount}) \{choiceArray}");
+                System.out.println(STR."(\{subject.getSubjectType()}) [\{min}/\{max}] \{subjectName}를(을) 수강하시겠습니까? (0 : ㄴㄴ / 1: ㅇㅇ)");
+
+                int input = sc.nextInt();
+                if (input == 1) {
+                    if (subject.getSubjectType().equals("MANDATORY")) {
+                        mandatoryCount++;
+                        mandatoryArray.add(subjectName);
+                    }
+                    else if (subject.getSubjectType().equals("CHOICE")) {
+                        choiceCount++;
+                        choiceArray.add(subjectName);
+                    }
+
+                    student.setStudentSubjectArr(subject);
+                }
+                if(min == max) {
+                    min = 0;
+                    max = 4;
+                }
+                min ++;
+            }
+
+            if(mandatoryCount < 3 || choiceCount < 2) System.out.println("수강생 등록 실패ㅜㅜ! \n");
+            else {
+                studentStore.add(student);
+                System.out.println(studentStore);
+                System.out.println("수강생 등록 성공!\n");
+                flag = false;
+            }
+        }
     }
 
     // 수강생 목록 조회
@@ -217,6 +261,7 @@ public class CampManagementApplication {
     private static void createScore() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
+
         // 기능 구현
         System.out.println("\n점수 등록 성공!");
     }
