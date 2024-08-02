@@ -260,11 +260,50 @@ public class CampManagementApplication {
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        ////////////////////
+        String studentName = "";
+        boolean exist = false;
+        // 입력받은 studentId로 실제 존재하는 학생인지 확인
+        for(Student student : studentStore) {
+            if (student.getStudentId().equals(studentId)) {
+                studentName = student.getStudentName();
+                exist = true;
+                break;
+            }
+        }
+
+        if(!exist) System.out.println("존재하는 수강생이 아닙니다.");
+
+        // Score 객체 생성
+        Score newScore = new Score(sequence(""));
+
+        // studentId 설정
+        newScore.setStudentId(studentId);
+
+        // subjectId 설정
+        System.out.println("관리할 과목의 번호를 입력하시오...");
+        String subjectId = sc.next();
+        newScore.setSubjectId(subjectId);
+
+        String subjectName = "";
+        for(Subject subject : subjectStore) {
+            if(subject.getSubjectId().equals(subjectId)) subjectName = subject.getSubjectName();
+        }
+        // round 설정
+        System.out.println("등록할 회차를 입력하시오...");
+        int round = sc.nextInt();
+        newScore.setRound(round);
+
+
+        // score 설정
+        System.out.println("등록할 점수를 입력하시오...");
+        double score = sc.nextDouble();
+        newScore.setScore(score);
+
         System.out.println("시험 점수를 등록합니다...");
 
         // 기능 구현
-        System.out.println("\n점수 등록 성공!");
+        scoreStore.add(newScore);
+        System.out.println(STR."\n \{studentName} 수강생 \{subjectName} 과목 \{round}회차 \{score}점수 등록 성공!");
     }
 
     // 수강생의 과목별 회차 점수 수정
