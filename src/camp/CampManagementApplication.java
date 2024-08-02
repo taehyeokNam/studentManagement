@@ -188,7 +188,8 @@ public class CampManagementApplication {
                 String subjectName = subject.getSubjectName();
 
                 System.out.println("현재까지 고른 과목 => 필수과목 : (" + mandatoryCount + ")" + mandatoryArray + ", 선택과목 (" + choiceCount + ")" + choiceArray);
-                System.out.println("(" + subject.getSubjectType() + ") [" + min + "/" + max + "] " + subjectName + "를(을) 수강하시겠습니까? (0 : ㄴㄴ / 1: ㅇㅇ)");
+                System.out.println("(" + subject.getSubjectType() + ") [" + min + "/" + max + "] " + subjectName + "를(을) 수강하시겠습니까? (0 : no / 1: yes)");
+
 
                 int input = sc.nextInt();
                 if (input == 1) {
@@ -224,6 +225,9 @@ public class CampManagementApplication {
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
+        for (Student student : studentStore) {
+            System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
+        }
         System.out.println("\n수강생 목록 조회 성공!");
     }
 
