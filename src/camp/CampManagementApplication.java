@@ -187,8 +187,8 @@ public class CampManagementApplication {
 
                 String subjectName = subject.getSubjectName();
 
-                System.out.println(STR."현재까지 고른 과목 => 필수과목 : (\{mandatoryCount}) \{mandatoryArray}, 선택과목 (\{choiceCount}) \{choiceArray}");
-                System.out.println(STR."(\{subject.getSubjectType()}) [\{min}/\{max}] \{subjectName}를(을) 수강하시겠습니까? (0 : ㄴㄴ / 1: ㅇㅇ)");
+                System.out.println("현재까지 고른 과목 => 필수과목 : (" + mandatoryCount + ")" + mandatoryArray + ", 선택과목 (" + choiceCount + ")" + choiceArray);
+                System.out.println("(" + subject.getSubjectType() + ") [" + min + "/" + max + "] " + subjectName + "를(을) 수강하시겠습니까? (0 : ㄴㄴ / 1: ㅇㅇ)");
 
                 int input = sc.nextInt();
                 if (input == 1) {
@@ -303,7 +303,7 @@ public class CampManagementApplication {
 
         // 기능 구현
         scoreStore.add(newScore);
-        System.out.println(STR."\n \{studentName} 수강생 \{subjectName} 과목 \{round}회차 \{score}점수 등록 성공!");
+        System.out.println("\n" + studentName + " 수강생 " + subjectName + " 과목 " + round + "회차" + score + "점수 등록 성공!");
     }
 
     // 수강생의 과목별 회차 점수 수정
