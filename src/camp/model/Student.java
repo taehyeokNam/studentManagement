@@ -29,6 +29,10 @@ public class Student {
         return subjectArray;
     }
 
+    public List<String> getColors() {
+        return colors;
+    }
+
     public void addColor(String color) {
         this.colors.add(color);
 }
