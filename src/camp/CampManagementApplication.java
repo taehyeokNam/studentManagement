@@ -20,7 +20,7 @@ public class CampManagementApplication {
     private static List<Subject> subjectStore;
     private static List<Score> scoreStore;
 
-    // 과목 타입
+    //public 과목 타입
     private static String SUBJECT_TYPE_MANDATORY = "MANDATORY";
     private static String SUBJECT_TYPE_CHOICE = "CHOICE";
 
@@ -323,9 +323,9 @@ public class CampManagementApplication {
         return roundId;
     }
 
-    private static double inputScore() throws BadException {
+    private static int inputScore() throws BadException {
         System.out.println("\n점수를 입력하시오...");
-        double inputScore = sc.nextDouble();
+        int inputScore = sc.nextInt();
 
         if(inputScore > 100 || inputScore < 0) {
             throw new BadException("scoreRangeError");
@@ -358,10 +358,12 @@ public class CampManagementApplication {
         newScore.setRound(round);
 
         // 점수 입력
-        double score = inputScore();
+        int score = inputScore();
         newScore.setScore(score);
 
         System.out.println("시험 점수를 등록합니다...");
+
+
 
         // 기능 구현
         scoreStore.add(newScore);
@@ -380,7 +382,7 @@ public class CampManagementApplication {
         int round = getRoundId();
 
         // 점수 입력
-        double updateScore = inputScore();
+        int updateScore = inputScore();
 
         System.out.println("시험 점수를 수정합니다...");
 
@@ -402,6 +404,13 @@ public class CampManagementApplication {
     // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() throws BadException {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
+        String studentSubject;
+        int round;
+
+        for (Score score : scoreStore) {
+
+        }
+
         // 기능 구현 (조회할 특정 과목)
         System.out.println("회차별 등급을 조회합니다...");
         // 기능 구현
