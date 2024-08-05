@@ -27,5 +27,4 @@ public class Subject {
     public String toString() {
         return subjectName + "(" + subjectType + ")";
     }
-
 }

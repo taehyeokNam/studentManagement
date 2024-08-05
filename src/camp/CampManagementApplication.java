@@ -211,7 +211,6 @@ public class CampManagementApplication {
                 }
                 min ++;
             }
-
             if(mandatoryCount < 3 || choiceCount < 2) System.out.println("수강생 등록 실패ㅜㅜ! \n");
             else {
                 studentStore.add(student);
