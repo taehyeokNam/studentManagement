@@ -40,4 +40,14 @@ public class Student {
     public void setStudentSubjectArr(Subject subject) {
         subjectArray.add(subject);
     }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", subjectArray=" + subjectArray +
+                ", colors=" + colors +
+                '}';
+    }
 }

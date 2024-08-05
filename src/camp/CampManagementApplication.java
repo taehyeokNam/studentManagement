@@ -227,8 +227,11 @@ public class CampManagementApplication {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
         for (Student student : studentStore) {
-
             System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
+            System.out.println("ID: " + student.getStudentId());
+            System.out.println("이름: " + student.getStudentName());
+            System.out.println("상태: " + student.getColors());
+            System.out.println("선택한 과목명 :" + student.getStudentSubjectArr().toString());
         }
         System.out.println("\n수강생 목록 조회 성공!");
     }
