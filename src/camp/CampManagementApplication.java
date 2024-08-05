@@ -171,7 +171,6 @@ public class CampManagementApplication {
 
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
         String i = "";
-        char a = i.charAt()
         boolean flag = true;
         // 기능 구현
         while(flag) {
