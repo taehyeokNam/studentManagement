@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 HELP.md
 .gradle
 build/
@@ -35,3 +36,7 @@ out/
 
 ### VS Code ###
 .vscode/
+=======
+.idea/
+out/
+>>>>>>> 2e18d4d0df4f1df5e5bcfa2d94b31bd803fec797
