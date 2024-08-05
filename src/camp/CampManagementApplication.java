@@ -403,16 +403,25 @@ public class CampManagementApplication {
 
     // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() throws BadException {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        String studentSubject;
-        int round;
+        String studentId = getStudentId();                  // 관리할 수강생 고유 번호
+        String studentSubject = getSubjectId();             // 관리할 과목 고유 번호
+        int round = getRoundId();                           // 관리할 회자 번호
+        char grade = ' ';                                   // 등급 저장 변수
+
+        if (round < 0) { throw new BadException("roundRangeError");}
 
         for (Score score : scoreStore) {
-
+            if (score.getStudentId().equals(studentId) &&
+                    score.getSubjectId().equals(studentSubject)) { grade = score.getGrade();}
         }
 
         // 기능 구현 (조회할 특정 과목)
         System.out.println("회차별 등급을 조회합니다...");
+        System.out.println("==============================");
+        System.out.println("회차 = " + round);
+        System.out.println("등급 = " + grade);
+        System.out.println("==============================");
+
         // 기능 구현
         System.out.println("\n등급 조회 성공!");
     }
