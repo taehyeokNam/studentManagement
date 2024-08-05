@@ -16,6 +16,12 @@ public class Score {
         return scoreId;
     }
 
+    public String getStudentId() { return studentId; }
+
+    public String getSubjectId() { return subjectId; }
+
+    public int getRound() { return round; }
+
     // Setter
 
     public void setScore(double score) {
