@@ -414,8 +414,6 @@ public class CampManagementApplication {
         int round = getRoundId();                           // 관리할 회자 번호
         char grade = ' ';                                   // 등급 저장 변수
 
-        if (round < 0) { throw new BadException("roundRangeError");}
-
         for (Score score : scoreStore) {
             if (score.getStudentId().equals(studentId) &&
                     score.getSubjectId().equals(studentSubject)) { grade = score.getGrade();}
