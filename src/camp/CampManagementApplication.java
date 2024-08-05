@@ -350,8 +350,12 @@ public class CampManagementApplication {
         newScore.setSubjectId(subjectId);
 
         String subjectName = "";
+        String subjectType = "";
         for(Subject subject : subjectStore) {
-            if(subject.getSubjectId().equals(subjectId)) subjectName = subject.getSubjectName();
+            if(subject.getSubjectId().equals(subjectId)) {
+                subjectName = subject.getSubjectName();
+                subjectType = subject.getSubjectType();
+            }
         }
         // 회차 입력
         int round = getRoundId();
@@ -360,6 +364,9 @@ public class CampManagementApplication {
         // 점수 입력
         int score = inputScore();
         newScore.setScore(score);
+
+        // 점수 등급 산정
+        newScore.setGrade(subjectType);
 
         System.out.println("시험 점수를 등록합니다...");
 
