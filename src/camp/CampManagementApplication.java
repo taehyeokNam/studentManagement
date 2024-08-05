@@ -427,15 +427,14 @@ public class CampManagementApplication {
 
         if (round < 0) { throw new BadException("roundRangeError");}
 
-<<<<<<< HEAD
         for (Score score : scoreStore) {
             if (score.getStudentId().equals(studentId) &&
-                    score.getSubjectId().equals(studentSubject)) { grade = score.getGrade();}
-=======
-        for (Score score : scoreStore){
+                    score.getSubjectId().equals(studentSubject)) {
+                grade = score.getGrade();
+            }
 
->>>>>>> 2100dba (ãã평균등급 조회)
         }
+
 
         // 기능 구현 (조회할 특정 과목)
         System.out.println("회차별 등급을 조회합니다...");
