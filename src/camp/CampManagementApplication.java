@@ -167,10 +167,28 @@ public class CampManagementApplication {
         System.out.println("\n수강생을 등록합니다...");
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
+
         // 기능 구현 (필수 과목, 선택 과목)
 
-        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
+        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>(), new ArrayList<>()); // 수강생 인스턴스 생성 예시 코드
         boolean flag = true;
+
+        // 상태 종류 추가
+        while (true) {
+            System.out.print("상태 종류를 선택하세요: 1) Green, 2) Red, 3) Yellow");
+            int color = sc.nextInt();
+            if (color == 1) {
+                student.addColor("Green");
+                break;
+            } else if (color == 2) {
+                student.addColor("Red");
+                break;
+            } else if (color == 3) {
+                student.addColor("Yellow");
+            } else {
+                System.out.println("잘못된 입력입니다.");
+            }
+        }
         // 기능 구현
         while(flag) {
             System.out.println("필수과목 3개 / 선택과목 2개를 반드시 선택해야 합니다.");
@@ -220,6 +238,7 @@ public class CampManagementApplication {
             }
         }
     }
+
 
     // 수강생 목록 조회
     private static void inquireStudent() {
