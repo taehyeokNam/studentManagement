@@ -328,14 +328,36 @@ public class CampManagementApplication {
 
         // 기능 구현
         scoreStore.add(newScore);
-        System.out.println("\n" + studentName + " 수강생 " + subjectName + " 과목 " + round + "회차" + score + "점수 등록 성공!");
+        System.out.println("\n" + studentName + " 수강생 " + subjectName + " 과목 " + round + "회차 " + score + "점수 등록 성공!");
     }
 
     // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         // 기능 구현 (수정할 과목 및 회차, 점수)
+
+        System.out.println("수정할 과목 번호를 입력하시오...");
+        String subjectId = sc.next();
+
+        System.out.println("회차를 입력하시오...");
+        int round = sc.nextInt();
+
+        System.out.println("수정할 점수를 입력하시오...");
+        double updateScore = sc.nextDouble();
+
         System.out.println("시험 점수를 수정합니다...");
+
+        for(Score score : scoreStore) {
+            String scoreStudentId = score.getStudentId();
+            String scoreSubjectId = score.getSubjectId();
+            int scoreRonud = score.getRound();
+
+            if(scoreStudentId.equals(studentId) && scoreSubjectId.equals(subjectId) && scoreRonud == round) {
+                score.setScore(updateScore);
+            }
+        }
+
+
         // 기능 구현
         System.out.println("\n점수 수정 성공!");
     }
