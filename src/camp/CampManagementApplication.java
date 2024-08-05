@@ -170,6 +170,8 @@ public class CampManagementApplication {
         // 기능 구현 (필수 과목, 선택 과목)
 
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
+        String i = "";
+        char a = i.charAt()
         boolean flag = true;
         // 기능 구현
         while(flag) {
@@ -226,6 +228,7 @@ public class CampManagementApplication {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
         for (Student student : studentStore) {
+
             System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
         }
         System.out.println("\n수강생 목록 조회 성공!");
