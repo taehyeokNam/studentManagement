@@ -22,6 +22,10 @@ public class Score {
 
     public int getRound() { return round; }
 
+    public double getScore() {
+        return score;
+    }
+
     // Setter
 
     public void setScore(double score) {
