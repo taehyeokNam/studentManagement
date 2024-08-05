@@ -4,7 +4,9 @@ import camp.model.Score;
 import camp.model.Student;
 import camp.model.Subject;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Notification
@@ -19,8 +21,9 @@ public class CampManagementApplication {
     private static List<Student> studentStore;
     private static List<Subject> subjectStore;
     private static List<Score> scoreStore;
+    private static Map<String, Object> studentInformation;
 
-    //public 과목 타입
+    // 과목 타입
     private static String SUBJECT_TYPE_MANDATORY = "MANDATORY";
     private static String SUBJECT_TYPE_CHOICE = "CHOICE";
 
@@ -95,6 +98,7 @@ public class CampManagementApplication {
                 )
         );
         scoreStore = new ArrayList<>();
+        studentInformation = new HashMap<>();
     }
 
     // index 자동 증가
@@ -115,7 +119,7 @@ public class CampManagementApplication {
         }
     }
 
-    private static void displayMainView() throws InterruptedException, BadException {
+    private static void displayMainView() throws InterruptedException {
         boolean flag = true;
         while (flag) {
             System.out.println("\n==================================");
@@ -146,14 +150,18 @@ public class CampManagementApplication {
             System.out.println("수강생 관리 실행 중...");
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
-            System.out.println("3. 메인 화면 이동");
+            System.out.println("3. 수강생 상세정보 조회");
+            System.out.println("4. 수강생 정보 수정");
+            System.out.println("5. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> flag = false; // 메인 화면 이동
+                case 3 -> studentInformation(); // 수강생 목록 조회
+                case 4 -> editStudentInformation(); // 수강생 정보 수정
+                case 5 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -168,12 +176,31 @@ public class CampManagementApplication {
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
         // 기능 구현 (필수 과목, 선택 과목)
+        String sequence = sequence(INDEX_TYPE_STUDENT);
 
-        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
+
+        Student student = new Student(sequence, studentName, new LinkedList<>(), new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
         String i = "";
         boolean flag = true;
+
+        // 상태 종류 추가
+        while (true) {
+            System.out.print("상태 종류를 선택하세요: 1) Green, 2) Red, 3) Yellow");
+            int color = sc.nextInt();
+            if (color == 1) {
+                student.addColor("Green");
+                break;
+            } else if (color == 2) {
+                student.addColor("Red");
+                break;
+            } else if (color == 3) {
+                student.addColor("Yellow");
+            } else {
+                System.out.println("잘못된 입력입니다.");
+            }
+        }
         // 기능 구현
-        while(flag) {
+        while (flag) {
             System.out.println("필수과목 3개 / 선택과목 2개를 반드시 선택해야 합니다.");
 
             int mandatoryCount = 0;
@@ -197,27 +224,30 @@ public class CampManagementApplication {
                     if (subject.getSubjectType().equals("MANDATORY")) {
                         mandatoryCount++;
                         mandatoryArray.add(subjectName);
-                    }
-                    else if (subject.getSubjectType().equals("CHOICE")) {
+                    } else if (subject.getSubjectType().equals("CHOICE")) {
                         choiceCount++;
                         choiceArray.add(subjectName);
                     }
 
+
                     student.setStudentSubjectArr(subject);
                 }
-                if(min == max) {
+                if (min == max) {
                     min = 0;
                     max = 4;
                 }
-                min ++;
+                min++;
             }
-            if(mandatoryCount < 3 || choiceCount < 2) System.out.println("수강생 등록 실패ㅜㅜ! \n");
+            if (mandatoryCount < 3 || choiceCount < 2) System.out.println("수강생 등록 실패ㅜㅜ! \n");
             else {
                 studentStore.add(student);
                 System.out.println(studentStore);
                 System.out.println("수강생 등록 성공!\n");
                 flag = false;
             }
+        }
+        for (Student studentInformationSave : studentStore) {
+            studentInformation.put(sequence, studentInformationSave);
         }
     }
 
@@ -235,7 +265,7 @@ public class CampManagementApplication {
         System.out.println("\n수강생 목록 조회 성공!");
     }
 
-    private static void displayScoreView() throws BadException {
+    private static void displayScoreView() {
         boolean flag = true;
         while (flag) {
             System.out.println("==================================");
@@ -260,67 +290,26 @@ public class CampManagementApplication {
         }
     }
 
-    // 수강생 입력받기, 수강생 존재 여부 체크
-    private static String getStudentId() throws BadException {
-        System.out.print("\n수강생의 번호를 입력하시오...");
-        String studentId = sc.next();
-        boolean exist = false;
-        for(Student student : studentStore) {
-            if (student.getStudentId().equals(studentId)) {
-                exist = true;
-                break;
-            }
-        }
-        if(!exist) {
-            throw new BadException("notExistStudent");
-        }
-        return studentId;
-    }
-
-    // 과목 입력받기, 입력 받은 과목 존재 여부 체크
-    private static String getSubjectId() throws BadException {
-        System.out.println("\n과목의 번호를 입력하시오...");
-        String subjectId = sc.next();
-        boolean exist = false;
-        for(Subject subject : subjectStore) {
-            if(subject.getSubjectId().equals(subjectId)) {
-                exist = true;
-                break;
-            }
-        }
-        if(!exist) {
-            throw new BadException("notExistSubject");
-        }
-        return subjectId;
-    }
-
-    // 회차 입력받기, 입력 받은 회차 범위 체크
-    private static int getRoundId() throws BadException {
-        System.out.println("\n회차를 입력하시오...");
-        int roundId = sc.nextInt();
-
-        if(roundId > 10 || roundId < 1) {
-            throw new BadException("roundRangeError");
-        }
-
-        return roundId;
-    }
-
-    private static int inputScore() throws BadException {
-        System.out.println("\n점수를 입력하시오...");
-        int inputScore = sc.nextInt();
-
-        if(inputScore > 100 || inputScore < 0) {
-            throw new BadException("scoreRangeError");
-        }
-
-        return inputScore;
+    private static String getStudentId() {
+        System.out.print("\n관리할 수강생의 번호를 입력하시오...");
+        return sc.next();
     }
 
     // 수강생의 과목별 시험 회차 및 점수 등록
-    private static void createScore() throws BadException {
+    private static void createScore() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         String studentName = "";
+        boolean exist = false;
+        // 입력받은 studentId로 실제 존재하는 학생인지 확인
+        for (Student student : studentStore) {
+            if (student.getStudentId().equals(studentId)) {
+                studentName = student.getStudentName();
+                exist = true;
+                break;
+            }
+        }
+
+        if (!exist) System.out.println("존재하는 수강생이 아닙니다.");
 
         // Score 객체 생성
         Score newScore = new Score(sequence(""));
@@ -329,75 +318,177 @@ public class CampManagementApplication {
         newScore.setStudentId(studentId);
 
         // subjectId 설정
-        String subjectId = getSubjectId();
+        System.out.println("관리할 과목의 번호를 입력하시오...");
+        String subjectId = sc.next();
         newScore.setSubjectId(subjectId);
 
         String subjectName = "";
-        for(Subject subject : subjectStore) {
-            if(subject.getSubjectId().equals(subjectId)) subjectName = subject.getSubjectName();
+        for (Subject subject : subjectStore) {
+            if (subject.getSubjectId().equals(subjectId)) subjectName = subject.getSubjectName();
         }
-        // 회차 입력
-        int round = getRoundId();
+        // round 설정
+        System.out.println("등록할 회차를 입력하시오...");
+        int round = sc.nextInt();
         newScore.setRound(round);
 
-        // 점수 입력
-        int score = inputScore();
+
+        // score 설정
+        System.out.println("등록할 점수를 입력하시오...");
+        int score = sc.nextInt();
         newScore.setScore(score);
 
         System.out.println("시험 점수를 등록합니다...");
 
-
-
         // 기능 구현
         scoreStore.add(newScore);
-        System.out.println("\n" + studentName + " 수강생 " + subjectName + " 과목 " + round + "회차 " + score + "점수 등록 성공!");
+        System.out.println("\n" + studentName + " 수강생 " + subjectName + " 과목 " + round + "회차" + score + "점수 등록 성공!");
     }
 
     // 수강생의 과목별 회차 점수 수정
-    private static void updateRoundScoreBySubject() throws BadException {
+    private static void updateRoundScoreBySubject() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         // 기능 구현 (수정할 과목 및 회차, 점수)
-
-        // 과목 입력
-        String subjectId = getSubjectId();
-
-        // 회차 입력
-        int round = getRoundId();
-
-        // 점수 입력
-        int updateScore = inputScore();
-
         System.out.println("시험 점수를 수정합니다...");
-
-        for(Score score : scoreStore) {
-            String scoreStudentId = score.getStudentId();
-            String scoreSubjectId = score.getSubjectId();
-            int scoreRonud = score.getRound();
-
-            if(scoreStudentId.equals(studentId) && scoreSubjectId.equals(subjectId) && scoreRonud == round) {
-                score.setScore(updateScore);
-                System.out.println(score.getScore());
-            }
-        }
-
         // 기능 구현
         System.out.println("\n점수 수정 성공!");
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
-    private static void inquireRoundGradeBySubject() throws BadException {
+    private static void inquireRoundGradeBySubject() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        String studentSubject;
-        int round;
-
-        for (Score score : scoreStore) {
-
-        }
-
         // 기능 구현 (조회할 특정 과목)
         System.out.println("회차별 등급을 조회합니다...");
         // 기능 구현
         System.out.println("\n등급 조회 성공!");
     }
 
+    private static void studentInformation() {
+        boolean value = true;
+        do {
+            System.out.println("조회할 수강생 고유 번호를 입력해주세요");
+            String studentUniqueNumber = sc.next();
+            Object informationSaveValue = studentInformation.get(studentUniqueNumber);
+            if (informationSaveValue == null) {
+                System.out.println("고유 번호가 존재하지 않습니다. 다시 입력해주세요");
+                value = false;
+            } else {
+                System.out.println("학생 상세조회 = " + informationSaveValue);
+                value = true;
+            }
+        } while (!value);
+    }
+
+
+    private static void editStudentInformation() {
+        System.out.println("수정할 수강생 고유 번호를 입력해주세요");
+        String studentUniqueNumber = sc.next();
+        Student studentToEdit = (Student) studentInformation.get(studentUniqueNumber);
+
+        if (studentToEdit == null) {
+            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
+            return;
+        }
+
+        boolean continueEditing = true;
+
+        while (continueEditing) {
+            System.out.println("\n수정할 항목을 선택하세요:");
+            System.out.println("1. 이름");
+            System.out.println("2. 상태");
+            System.out.println("3. 필수과목");
+            System.out.println("4. 선택과목");
+            System.out.println("5. 수정을 완료하고 종료");
+            System.out.print("선택: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("새 이름을 입력하세요: ");
+                    String newName = sc.next();
+                    studentToEdit.setStudentName(newName);
+                    System.out.println("이름이 성공적으로 수정되었습니다.");
+                    break;
+                case 2:
+                    System.out.println("새로운 상태를 선택하세요: 1) Green, 2) Red, 3) Yellow");
+                    int newColorChoice = sc.nextInt();
+                    String newColor = "";
+                    if (newColorChoice == 1) {
+                        newColor = "Green";
+                    } else if (newColorChoice == 2) {
+                        newColor = "Red";
+                    } else if (newColorChoice == 3) {
+                        newColor = "Yellow";
+                    } else {
+                        System.out.println("잘못된 입력입니다.");
+                        break;
+                    }
+                    studentToEdit.getColors().clear();
+                    studentToEdit.addColor(newColor);
+                    System.out.println("상태가 성공적으로 수정되었습니다.");
+                    break;
+                case 3:
+                    updateSubjects(studentToEdit, SUBJECT_TYPE_MANDATORY);
+                    break;
+                case 4:
+                    updateSubjects(studentToEdit, SUBJECT_TYPE_CHOICE);
+                    break;
+                case 5:
+                    continueEditing = false;
+                    System.out.println("수정을 종료합니다.");
+                    break;
+                default:
+                    System.out.println("잘못된 선택입니다.");
+            }
+        }
+    }
+
+    private static void updateSubjects(Student student, String subjectType) {
+        List<Subject> subjects = subjectType.equals(SUBJECT_TYPE_MANDATORY) ? getMandatorySubjects() : getChoiceSubjects();
+        List<Subject> currentSubjects = student.getStudentSubjectArr();
+
+        System.out.println("현재 선택된 과목: " + currentSubjects);
+        System.out.println(subjectType + " 과목 목록:");
+
+        for (int i = 0; i < subjects.size(); i++) {
+            System.out.println((i + 1) + ". " + subjects.get(i).getSubjectName());
+        }
+
+        System.out.print("새로 추가할 과목 번호를 입력하세요 (종료: 0): ");
+        int subjectChoice = sc.nextInt();
+
+        if (subjectChoice > 0 && subjectChoice <= subjects.size()) {
+            Subject selectedSubject = subjects.get(subjectChoice - 1);
+            if (subjectType.equals(SUBJECT_TYPE_MANDATORY)) {
+                currentSubjects.removeIf(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY));
+            } else {
+                currentSubjects.removeIf(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE));
+            }
+            currentSubjects.add(selectedSubject);
+            System.out.println(subjectType + " 과목이 성공적으로 수정되었습니다.");
+        } else if (subjectChoice != 0) {
+            System.out.println("잘못된 입력입니다.");
+        }
+    }
+
+    private static List<Subject> getMandatorySubjects() {
+        List<Subject> mandatorySubjects = new ArrayList<>();
+        for (Subject subject : subjectStore) {
+            if (subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) {
+                mandatorySubjects.add(subject);
+            }
+        }
+        return mandatorySubjects;
+    }
+
+    private static List<Subject> getChoiceSubjects() {
+        List<Subject> choiceSubjects = new ArrayList<>();
+        for (Subject subject : subjectStore) {
+            if (subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE)) {
+                choiceSubjects.add(subject);
+            }
+        }
+        return choiceSubjects;
+    }
 }
+
+

@@ -8,7 +8,7 @@ public class Student {
     private List<Subject> subjectArray;
     private List<String> colors;
 
-    public Student(String seq, String studentName, List<Subject> subjectArray) {
+    public Student(String seq, String studentName, List<Subject> subjectArray, List<String> colors) {
         this.studentId = seq;
         this.studentName = studentName;
         this.subjectArray = subjectArray;
@@ -24,6 +24,10 @@ public class Student {
         return studentName;
     }
 
+    public void setStudentName(String newName) {
+        this.studentName = newName;
+    }
+
     public List<Subject> getStudentSubjectArr() {
         return subjectArray;
     }
@@ -35,8 +39,8 @@ public class Student {
     public void addColor(String color) {
         this.colors.add(color);
 }
-
     // Setter
+
     public void setStudentSubjectArr(Subject subject) {
         subjectArray.add(subject);
     }
