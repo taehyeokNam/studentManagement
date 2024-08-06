@@ -1,5 +1,7 @@
 package camp.model;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
@@ -11,6 +13,9 @@ public class Student {
     public void setColors(String colors) {
         this.colors = colors;
     }
+    private List<String> mandatorySubjectArr = new ArrayList<>();
+
+    private List<String> choiceSubjectArr = new ArrayList<>();
 
     public Student(String seq, String studentName, List<Subject> subjectArray) {
         this.studentId = seq;
@@ -35,11 +40,23 @@ public class Student {
         return subjectArray;
     }
 
+    public List<String> getMandatorySubjectArr() {
+        return mandatorySubjectArr;
+    }
+
+    public  List<String> getChoiceSubjectArr() {
+        return choiceSubjectArr;
+    }
+
     public String getColors() {
         return colors;
     }
 
-    // Setter
+
+    public void addColor(String color) {
+        this.colors = color;
+}
+ // Setter
 
     public void setStudentSubjectArr(Subject subject) {
         subjectArray.add(subject);
@@ -53,5 +70,13 @@ public class Student {
                 ", subjectArray=" + subjectArray +
                 ", colors=" + colors +
                 '}';
+    }
+
+    public void setMandatorySubjectArr(String subjectId) {
+        mandatorySubjectArr.add(subjectId);
+    }
+
+    public void setChoiceSubjectArr(String subjectId) {
+        choiceSubjectArr.add(subjectId);
     }
 }
