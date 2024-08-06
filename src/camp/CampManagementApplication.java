@@ -152,16 +152,20 @@ public class CampManagementApplication {
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 수강생 상세정보 조회");
             System.out.println("4. 수강생 정보 수정");
-            System.out.println("5. 메인 화면 이동");
+            System.out.println("5. 수강생 삭제");
+            System.out.println("6. 수강생 상태별 조회");
+            System.out.println("7. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> studentInformation(); // 수강생 목록 조회
+                case 3 -> studentInformation(); // 수강생 상세정보 조회
                 case 4 -> editStudentInformation(); // 수강생 정보 수정
-                case 5 -> flag = false; // 메인 화면 이동
+                case 5 -> studentRemove(); // 수강생 삭제
+                case 6 -> studentBYColor();// 수강생 상태별 조회
+                case 7 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -179,7 +183,7 @@ public class CampManagementApplication {
         String sequence = sequence(INDEX_TYPE_STUDENT);
 
 
-        Student student = new Student(sequence, studentName, new LinkedList<>(), new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
+        Student student = new Student(sequence, studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
         String i = "";
         boolean flag = true;
 
@@ -188,13 +192,13 @@ public class CampManagementApplication {
             System.out.print("상태 종류를 선택하세요: 1) Green, 2) Red, 3) Yellow");
             int color = sc.nextInt();
             if (color == 1) {
-                student.addColor("Green");
+                student.setColors("Green");
                 break;
             } else if (color == 2) {
-                student.addColor("Red");
+                student.setColors("Red");
                 break;
             } else if (color == 3) {
-                student.addColor("Yellow");
+                student.setColors("Yellow");
             } else {
                 System.out.println("잘못된 입력입니다.");
             }
@@ -382,113 +386,136 @@ public class CampManagementApplication {
     private static void editStudentInformation() {
         System.out.println("수정할 수강생 고유 번호를 입력해주세요");
         String studentUniqueNumber = sc.next();
-        Student studentToEdit = (Student) studentInformation.get(studentUniqueNumber);
+        Student student = (Student) studentInformation.get(studentUniqueNumber);
 
-        if (studentToEdit == null) {
+        if (student == null) {
             System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
             return;
         }
 
-        boolean continueEditing = true;
-
-        while (continueEditing) {
-            System.out.println("\n수정할 항목을 선택하세요:");
+        boolean editing = true;
+        while (editing) {
+            System.out.println("수정할 항목을 선택하세요:");
             System.out.println("1. 이름");
             System.out.println("2. 상태");
             System.out.println("3. 필수과목");
             System.out.println("4. 선택과목");
             System.out.println("5. 수정을 완료하고 종료");
-            System.out.print("선택: ");
+
             int choice = sc.nextInt();
+            sc.nextLine();  // consume the newline
 
             switch (choice) {
                 case 1:
-                    System.out.print("새 이름을 입력하세요: ");
-                    String newName = sc.next();
-                    studentToEdit.setStudentName(newName);
+                    System.out.print("새로운 이름을 입력하세요: ");
+                    String newName = sc.nextLine();
+                    student.setStudentName(newName);
                     System.out.println("이름이 성공적으로 수정되었습니다.");
                     break;
                 case 2:
-                    System.out.println("새로운 상태를 선택하세요: 1) Green, 2) Red, 3) Yellow");
-                    int newColorChoice = sc.nextInt();
-                    String newColor = "";
-                    if (newColorChoice == 1) {
-                        newColor = "Green";
-                    } else if (newColorChoice == 2) {
-                        newColor = "Red";
-                    } else if (newColorChoice == 3) {
-                        newColor = "Yellow";
-                    } else {
-                        System.out.println("잘못된 입력입니다.");
-                        break;
-                    }
-                    studentToEdit.getColors().clear();
-                    studentToEdit.addColor(newColor);
-                    System.out.println("상태가 성공적으로 수정되었습니다.");
+                    updateStatus(student);
                     break;
                 case 3:
-                    updateSubjects(studentToEdit, SUBJECT_TYPE_MANDATORY);
+                    updateSubjects(student, SUBJECT_TYPE_MANDATORY, true);
                     break;
                 case 4:
-                    updateSubjects(studentToEdit, SUBJECT_TYPE_CHOICE);
+                    updateSubjects(student, SUBJECT_TYPE_CHOICE, false);
                     break;
                 case 5:
-                    continueEditing = false;
-                    System.out.println("수정을 종료합니다.");
+                    editing = false;
+                    System.out.println("수정이 완료되었습니다.");
                     break;
                 default:
-                    System.out.println("잘못된 선택입니다.");
+                    System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
             }
         }
     }
 
+    private static void updateStatus(Student student) {
+        while (true) {
+            System.out.print("새로운 상태를 선택하세요 (1: Green, 2: Red, 3: Yellow, 종료: 0): ");
+            int statusChoice = sc.nextInt();
+            sc.nextLine();  // consume the newline
 
-    private static void updateSubjects(Student student, String subjectType) { // 두개의 객체를 받아서 실행
-        List<Subject> subjects = subjectType.equals(SUBJECT_TYPE_MANDATORY) ? getMandatorySubjects() : getChoiceSubjects();
-        //subjectType이 SUBJECT_TYPE_MANDATORY 와 같으면 필수 과목 아니면 선택과목을 리스트에 저장
-        List<Subject> currentSubjects = student.getStudentSubjectArr(); // 학생이 선택한 과목을 리스트에 저장
-        List<Subject> updatedSubject = new ArrayList<>();
+            if (statusChoice == 0) {
+                break;
+            } else {
+                switch (statusChoice) {
+                    case 1:
+                        student.setColors("Green");
+                        System.out.println("상태가 Green으로 변경되었습니다.");
+                        break;
+                    case 2:
+                        student.setColors("Red");
+                        System.out.println("상태가 Red로 변경되었습니다.");
+                        break;
+                    case 3:
+                        student.setColors("Yellow");
+                        System.out.println("상태가 Yellow로 변경되었습니다.");
+                        break;
+                    default:
+                        System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
+                }
+            }
+        }
+    }
+
+    private static void updateSubjects(Student student, String subjectType, boolean isMandatory) {
+        List<Subject> subjects = isMandatory ? getMandatorySubjects() : getChoiceSubjects();
+        List<Subject> currentSubjects = student.getStudentSubjectArr();
+
 
         System.out.println("현재 선택된 과목: " + currentSubjects);
         System.out.println(subjectType + " 과목 목록:");
 
-        for (int i = 0; i < subjects.size(); i++) { // subjects 리스트를 순회하고 번호 1부터 출력
+        for (int i = 0; i < subjects.size(); i++) {
             System.out.println((i + 1) + ". " + subjects.get(i).getSubjectName());
         }
-        for (Subject subject : currentSubjects) {
-            if (subjectType.equals(SUBJECT_TYPE_MANDATORY) && !subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) {
-                updatedSubject.add(subject);
-            } else if (subjectType.equals(SUBJECT_TYPE_CHOICE) && !subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE)) {
-                updatedSubject.add(subject);
+        // 필수 과목들을 삭제하고 입력을 받기 위해 기존 필수 과목 제거
+        if (isMandatory) {
+            Iterator<Subject> iterator = currentSubjects.iterator(); // currentSubjects 리스트에서 Iterator를 생성한다. Iterator는 리스트를 순회하며 요소를 접근함
+            while (iterator.hasNext()) { // Iterator의 hasNext() 메서드를 호출하여 리스트에 다음 요소가 있는지 확인합니다. 있으면 true를 반환, 없으면 false를 반환함.
+                Subject subject = iterator.next(); //Iterator의 next() 메서드를 호출하여 현재 요소를 가져온다.
+                if (subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) { // Type에 SUBJECT_TYPE_MANDATORY 갔은게 있으면 true
+                    iterator.remove(); // 해당 과목을 제거
+                }
+            }
+        } else {
+            Iterator<Subject> iterator = currentSubjects.iterator();
+            while (iterator.hasNext()) {
+                Subject subject = iterator.next();
+                if (subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE)) {
+                    iterator.remove();
+                }
             }
         }
 
-        currentSubjects.clear();
-        for (Subject newUpdatedsubject : updatedSubject) {
-            currentSubjects.add(newUpdatedsubject);
-        }
         while (true) {
-            System.out.print("새로 추가할 과목 번호를 입력하세요 (종료: 0): ");
+            System.out.print("추가할 과목 번호를 입력하세요 (종료: 0): ");
             int subjectChoice = sc.nextInt();
 
-            if (subjectChoice == 0) {
+            if (subjectChoice > 0 && subjectChoice <= subjects.size()) { // 번호가 0보다 크고과목에 수 보다 작거나 같은지 확인
+                Subject selectedSubject = subjects.get(subjectChoice - 1); // 번호에서 -1을 해야 해당 과목이 지정 됨 List index 는 0번부터 시작
+                if (!currentSubjects.contains(selectedSubject)) { // 선택한 과목이 똑같은게 없는지 확인 없으면 ture
+                    currentSubjects.add(selectedSubject); // 선택한 과목 넣어주기
+                    System.out.println(selectedSubject.getSubjectName() + " 과목이 추가되었습니다.");
+                } else {
+                    System.out.println("이미 선택된 과목입니다."); // 이미 선택한 과목이면 다시 질문
+                }
+            } else if (subjectChoice == 0) { // 0번이면 반복문 종료
                 break;
-            }
-
-            if (subjectChoice > 0 && subjectChoice <= subjects.size()) {
-                Subject selectedSubject = subjects.get(subjectChoice - 1);
-                currentSubjects.add(selectedSubject);
-                System.out.println(selectedSubject.getSubjectName() + " 과목이 성공적으로 수정되었습니다.");
             } else {
-                System.out.println("잘못된 입력입니다.");
+                System.out.println("잘못된 입력입니다."); // 숫가 아닌 다른걸 입력하거나 해당 과목번호 외에 번호를 입력할때 나옴
             }
         }
+
+        System.out.println(subjectType + " 과목이 성공적으로 수정되었습니다."); // 수정이 안료되면 나옴
     }
 
     private static List<Subject> getMandatorySubjects() {
         List<Subject> mandatorySubjects = new ArrayList<>();
-        for (Subject subject : subjectStore) {
-            if (subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) {
+        for (Subject subject : subjectStore) { // subjectStore에 있는 과목을 전체를 subject변수에 담음
+            if (subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) { // 그중에서 SUBJECT_TYPE_MANDATORY 해당하는 과목만 mandatorySubjects에 담고 리턴
                 mandatorySubjects.add(subject);
             }
         }
@@ -497,12 +524,62 @@ public class CampManagementApplication {
 
     private static List<Subject> getChoiceSubjects() {
         List<Subject> choiceSubjects = new ArrayList<>();
-        for (Subject subject : subjectStore) {
-            if (subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE)) {
+        for (Subject subject : subjectStore) { // subjectStore에 있는 과목을 전체를 subject변수에 담음
+            if (subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE)) {// 그중에서 SUBJECT_TYPE_CHOICE 해당하는 과목만 mandatorySubjects에 담고 리턴
                 choiceSubjects.add(subject);
             }
         }
         return choiceSubjects;
+    }
+
+    private static void studentRemove() {
+        System.out.println("삭제할 수강생 고유 번호를 입력해주세요");
+        String studentUniqueNumber = sc.next();
+        Object informationSaveValue = studentInformation.get(studentUniqueNumber);
+
+        if (informationSaveValue == null) {
+            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
+            return;
+        } else {
+            studentInformation.remove(studentUniqueNumber);
+            for (int i = 0; i < studentStore.size(); i++) {
+                if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)) {
+                    studentStore.remove(i);
+                    System.out.println("삭제 완료!");
+                    break;
+                }
+            }
+        }
+    }
+
+    private static void studentBYColor() {
+        System.out.println("조회할 학생의 상태를 선택하세요 (1: Green, 2: Red, 3: Yellow: )");
+        int statusChoice = sc.nextInt();
+        String selectdeColor = "";
+
+        switch (statusChoice) {
+            case 1 -> selectdeColor = "Green";
+            case 2 -> selectdeColor = "Red";
+            case 3 -> selectdeColor = "Yellow";
+            default -> {
+                System.out.println("잘못된 입력입니다.");
+                return;
+            }
+        }
+        System.out.println("상태가 " + selectdeColor + "인 수강생 목록");
+        boolean found = false;
+
+        for (Student student : studentStore) {
+            if (student.getColors().equals(selectdeColor)) {
+                System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
+                found = true;
+            }
+            if (!found) {
+                System.out.println("해당 상태의 수강생이 존재하지 않습니다.");
+            } else {
+                System.out.println("상태별 수강생 조회 성공");
+            }
+        }
     }
 }
 
