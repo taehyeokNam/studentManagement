@@ -12,11 +12,10 @@ public class Student {
         this.colors = colors;
     }
 
-    public Student(String seq, String studentName, List<Subject> subjectArray, String colors) {
+    public Student(String seq, String studentName, List<Subject> subjectArray) {
         this.studentId = seq;
         this.studentName = studentName;
         this.subjectArray = subjectArray;
-        this.colors = colors;
     }
 
     // Getter

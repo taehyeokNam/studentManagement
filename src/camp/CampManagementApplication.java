@@ -181,8 +181,7 @@ public class CampManagementApplication {
         String sequence = sequence(INDEX_TYPE_STUDENT);
 
 
-        String i = "";
-        Student student = new Student(sequence, studentName, new LinkedList<>(), i); // 수강생 인스턴스 생성 예시 코드
+        Student student = new Student(sequence, studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
         boolean flag = true;
 
         // 상태 종류 추가
@@ -535,18 +534,26 @@ public class CampManagementApplication {
         String studentUniqueNumber = sc.next();
         Object informationSaveValue = studentInformation.get(studentUniqueNumber);
 
-        if (informationSaveValue == null) {
-            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
-            return;
-        }else {
-            studentInformation.remove(studentUniqueNumber);
+        if (informationSaveValue != null) {
             for (int i = 0; i < studentStore.size(); i++) {
                 if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)){
-                    studentStore.remove(i);
-                    System.out.println("삭제 완료!");
-                    break;
+                    System.out.println(informationSaveValue);
+                    System.out.println("수강생을 삭제 하시겠습니까?(예:1 or 아니요:2");
+                    int next = sc.nextInt();
+                    if (next == 1) {
+                        studentInformation.remove(studentUniqueNumber);
+                        studentStore.remove(i);
+                        System.out.println("삭제 완료!");
+                        break;
+                    } else if (next == 2){
+                        System.out.println("수강생 삭제가 취소 되었습니다.");
+                        break;
+                    }
                 }
             }
+        }else {
+            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
+            return;
         }
     }
 }
