@@ -7,9 +7,9 @@ public class Student {
     private String studentId;
     private String studentName;
     private List<Subject> subjectArray;
-    private List<String> colors;
+    private String colors;
 
-    public Student(String seq, String studentName, List<Subject> subjectArray, List<String> colors) {
+    public Student(String seq, String studentName, List<Subject> subjectArray, String colors) {
         this.studentId = seq;
         this.studentName = studentName;
         this.subjectArray = subjectArray;
@@ -29,12 +29,12 @@ public class Student {
         return subjectArray;
     }
 
-    public List<String> getColors() {
+    public String getColors() {
         return colors;
     }
 
     public void addColor(String color) {
-        this.colors.add(color);
+        this.colors = color;
 }
 
     // Setter

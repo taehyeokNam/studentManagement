@@ -489,4 +489,13 @@ public class CampManagementApplication {
 
     }
 
+    public static void studentMandatoryAverage(String status) {
+
+        for(Student student : studentStore) {
+            if(student.getColors().equals(status)) {
+
+            }
+        }
+    }
+
 }
