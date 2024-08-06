@@ -153,7 +153,8 @@ public class CampManagementApplication {
             System.out.println("3. 수강생 상세정보 조회");
             System.out.println("4. 수강생 정보 수정");
             System.out.println("5. 수강생 삭제");
-            System.out.println("6. 메인 화면 이동");
+            System.out.println("6. 수강생 상태별 조회");
+            System.out.println("7. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -163,7 +164,8 @@ public class CampManagementApplication {
                 case 3 -> studentInformation(); // 수강생 상세정보 조회
                 case 4 -> editStudentInformation(); // 수강생 정보 수정
                 case 5 -> studentRemove(); // 수강생 삭제
-                case 6 -> flag = false; // 메인 화면 이동
+                case 6 -> studentBYColor();// 수강생 상태별 조회
+                case 7 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -436,7 +438,7 @@ public class CampManagementApplication {
 
             if (statusChoice == 0) {
                 break;
-            }else {
+            } else {
                 switch (statusChoice) {
                     case 1:
                         student.setColors("Green");
@@ -529,14 +531,15 @@ public class CampManagementApplication {
         return choiceSubjects;
     }
 
-    private static void studentRemove(){
+
+    private static void studentRemove() {
         System.out.println("삭제할 수강생 고유 번호를 입력해주세요");
         String studentUniqueNumber = sc.next();
         Object informationSaveValue = studentInformation.get(studentUniqueNumber);
 
         if (informationSaveValue != null) {
             for (int i = 0; i < studentStore.size(); i++) {
-                if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)){
+                if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)) {
                     System.out.println(informationSaveValue);
                     System.out.println("수강생을 삭제 하시겠습니까?(예:1 or 아니요:2");
                     int next = sc.nextInt();
@@ -545,17 +548,63 @@ public class CampManagementApplication {
                         studentStore.remove(i);
                         System.out.println("삭제 완료!");
                         break;
-                    } else if (next == 2){
+                    } else if (next == 2) {
                         System.out.println("수강생 삭제가 취소 되었습니다.");
                         break;
                     }
                 }
             }
-        }else {
-            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
-            return;
+        } else {
+            if (informationSaveValue == null) {
+                System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
+                return;
+            } else {
+                studentInformation.remove(studentUniqueNumber);
+                for (int i = 0; i < studentStore.size(); i++) {
+                    if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)) {
+                        studentStore.remove(i);
+                        System.out.println("삭제 완료!");
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void studentBYColor() {
+        System.out.println("조회할 학생의 상태를 선택하세요 (1: Green, 2: Red, 3: Yellow: )");
+        int statusChoice = sc.nextInt();
+        String selectedColor = "";
+
+        switch (statusChoice) {
+            case 1 -> selectedColor = "Green";
+            case 2 -> selectedColor = "Red";
+            case 3 -> selectedColor = "Yellow";
+            default -> {
+                System.out.println("잘못된 입력입니다.");
+                return;
+            }
+        }
+        System.out.println("상태가 " + selectedColor + "인 수강생 목록");
+        boolean found = false; // 선택된 상태의 수강생이 존재하는지 추적하기 위해 found 변수를 false로 초기화
+        int index = 0;
+
+        while (index < studentStore.size()) { // 현재 인덱스에 해당하는 student객체를 가져옴
+            Student student = studentStore.get(index);
+            if (student.getColors().equals(selectedColor)) { // 현재 student 객체의 상태가 선택된 상태와 일치하는지 확인
+                System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
+                // 일치하는 경우, 수강생의 ID와 이름을 출력
+                found = true; // 일치하는 수강생이 있다는 것을 알기 위해 true로 설정
+            }
+            index++; // 다음 인덱스 이동
+        }
+        if (!found) { // 일치하는 수강생을 찾지 못한경우
+            System.out.println("해당 상태의 수강생이 존재하지 않습니다.");
+        } else { // 일치하는 수강생을 찾지 못한경우가 아니면 메세지 출력
+            System.out.println("상태별 수강생 조회 성공");
         }
     }
 }
+
 
 
