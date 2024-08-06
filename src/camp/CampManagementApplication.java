@@ -170,7 +170,7 @@ public class CampManagementApplication {
 
         // 기능 구현 (필수 과목, 선택 과목)
 
-        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>(), new ArrayList<>()); // 수강생 인스턴스 생성 예시 코드
+        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, new LinkedList<>()); // 수강생 인스턴스 생성 예시 코드
         boolean flag = true;
 
         // 상태 종류 추가
@@ -204,6 +204,7 @@ public class CampManagementApplication {
             for (Subject subject : subjectStore) {
 
                 String subjectName = subject.getSubjectName();
+                String subjectId = subject.getSubjectId();
 
                 System.out.println("현재까지 고른 과목 => 필수과목 : (" + mandatoryCount + ")" + mandatoryArray + ", 선택과목 (" + choiceCount + ")" + choiceArray);
                 System.out.println("(" + subject.getSubjectType() + ") [" + min + "/" + max + "] " + subjectName + "를(을) 수강하시겠습니까? (0 : no / 1: yes)");
@@ -214,10 +215,12 @@ public class CampManagementApplication {
                     if (subject.getSubjectType().equals("MANDATORY")) {
                         mandatoryCount++;
                         mandatoryArray.add(subjectName);
+                        student.setMandatorySubjectArr(subjectId);
                     }
                     else if (subject.getSubjectType().equals("CHOICE")) {
                         choiceCount++;
                         choiceArray.add(subjectName);
+                        student.setChoiceSubjectArr(subjectId);
                     }
 
                     student.setStudentSubjectArr(subject);
@@ -269,7 +272,8 @@ public class CampManagementApplication {
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
             System.out.println("4. 수강생 과목 별 평균 등급 조회");
-            System.out.println("5. 메인 화면 이동");
+            System.out.println("5. 특정 상태 수강생 과목 별 평균 등급 조회");
+            System.out.println("6. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -278,7 +282,8 @@ public class CampManagementApplication {
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
                 case 4 -> average();
-                case 5 -> flag = false; // 메인 화면 이동
+                case 5 -> studentMandatoryAverage();
+                case 6 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -435,7 +440,6 @@ public class CampManagementApplication {
 
         }
 
-
         // 기능 구현 (조회할 특정 과목)
         System.out.println("회차별 등급을 조회합니다...");
         System.out.println("==============================");
@@ -489,13 +493,74 @@ public class CampManagementApplication {
 
     }
 
-    public static void studentMandatoryAverage(String status) {
+    public static void studentMandatoryAverage() {
+        Map<Integer, String> statusMap = new HashMap<>();
+        statusMap.put(0, "Green");
+        statusMap.put(1, "Yellow");
+        statusMap.put(2, "Red");
 
-        for(Student student : studentStore) {
-            if(student.getColors().equals(status)) {
+        System.out.println("조회할 수강생들의 상태를 입력하시오... (0: Green / 1: Yellow / 2: Red)");
+        String status = statusMap.get(sc.nextInt());
 
+        System.out.println(status + "상태 수강생들의 필수과목 평균 등급 조회...");
+            for(Subject subject : subjectStore) {
+                // 필수 과목만
+                int sum = 0;
+                int count = 0;
+                int studentCount = 0;
+                if(subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) {
+                    for(Student student : studentStore) {
+                        // 특정 상태 수강생들
+                        if(student.getColors().equals(status)) {
+                            studentCount ++;
+                            for(Score score : scoreStore) {
+                                if(score.getSubjectId().equals(subject.getSubjectId())) {
+                                    sum += score.getScore();
+                                    count ++;
+                                }
+                            }
+                        }
+                    }
+
+                    if(count != 0) {
+                        char grade = setGrade(SUBJECT_TYPE_MANDATORY, sum / count);
+                        System.out.println("------------------");
+                        System.out.println("수강생 상태 : " + status + " " + studentCount + " 명");
+                        System.out.println("과목명 : " + subject.getSubjectName());
+                        System.out.println("평균 등급 : " + grade);
+                    } else {
+                        System.out.println("------------------");
+                        System.out.println("수강생 상태 : " + status + " " + studentCount + " 명");
+                        System.out.println("과목명 : " + subject.getSubjectName());
+                        System.out.println("NO Grade");
+                    }
+                }
             }
+        System.out.println("------------------");
+    }
+
+    private static char setGrade (String subjectType, int score) {
+        char grade = 'N';
+        switch (subjectType) {
+            case "MANDATORY" :
+                if (score > 94 && score <= 100) grade = 'A';
+                else if (score >89 && score <= 94) grade = 'B';
+                else if (score > 79 && score <= 89) grade = 'C';
+                else if (score > 69 && score <= 79) grade = 'D';
+                else if (score > 59 && score <= 69) grade = 'F';
+                else grade = 'N';
+                break;
+            case "CHOICE" :
+                if (score > 89 && score <= 100) grade = 'A';
+                else if (score >79 && score <= 89) grade = 'B';
+                else if (score > 69 && score <= 79) grade = 'C';
+                else if (score > 59 && score <= 69) grade = 'D';
+                else if (score > 49 && score <= 59) grade = 'F';
+                else grade = 'N';
+                break;
+            default:
         }
+        return grade;
     }
 
 }

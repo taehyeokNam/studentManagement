@@ -52,7 +52,7 @@ public class Score {
         this.subjectId = subjectId;
     }
 
-    public char setGrade (String subjectType) {
+    public  char setGrade (String subjectType) {
         switch (subjectType) {
             case "MANDATORY" :
                 if (score > 94 && score <= 100) grade = 'A';
