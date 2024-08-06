@@ -31,6 +31,8 @@ public class Score {
 
     public char getGrade() {return grade; }
 
+    public String getSubjectType() { return subjectType; }
+
 
     // Setter
 
@@ -50,7 +52,7 @@ public class Score {
         this.subjectId = subjectId;
     }
 
-    public void setGrade (String subjectType) {
+    public char setGrade (String subjectType) {
         switch (subjectType) {
             case "MANDATORY" :
                 if (score > 94 && score <= 100) grade = 'A';
@@ -70,5 +72,7 @@ public class Score {
                 break;
             default:
         }
+        return grade;
     }
+
 }
