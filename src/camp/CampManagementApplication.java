@@ -442,31 +442,46 @@ public class CampManagementApplication {
         }
     }
 
-    private static void updateSubjects(Student student, String subjectType) {
+
+    private static void updateSubjects(Student student, String subjectType) { // 두개의 객체를 받아서 실행
         List<Subject> subjects = subjectType.equals(SUBJECT_TYPE_MANDATORY) ? getMandatorySubjects() : getChoiceSubjects();
-        List<Subject> currentSubjects = student.getStudentSubjectArr();
+        //subjectType이 SUBJECT_TYPE_MANDATORY 와 같으면 필수 과목 아니면 선택과목을 리스트에 저장
+        List<Subject> currentSubjects = student.getStudentSubjectArr(); // 학생이 선택한 과목을 리스트에 저장
+        List<Subject> updatedSubject = new ArrayList<>();
 
         System.out.println("현재 선택된 과목: " + currentSubjects);
         System.out.println(subjectType + " 과목 목록:");
 
-        for (int i = 0; i < subjects.size(); i++) {
+        for (int i = 0; i < subjects.size(); i++) { // subjects 리스트를 순회하고 번호 1부터 출력
             System.out.println((i + 1) + ". " + subjects.get(i).getSubjectName());
         }
-
-        System.out.print("새로 추가할 과목 번호를 입력하세요 (종료: 0): ");
-        int subjectChoice = sc.nextInt();
-
-        if (subjectChoice > 0 && subjectChoice <= subjects.size()) {
-            Subject selectedSubject = subjects.get(subjectChoice - 1);
-            if (subjectType.equals(SUBJECT_TYPE_MANDATORY)) {
-                currentSubjects.removeIf(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY));
-            } else {
-                currentSubjects.removeIf(subject -> subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE));
+        for (Subject subject : currentSubjects) {
+            if (subjectType.equals(SUBJECT_TYPE_MANDATORY) && !subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) {
+                updatedSubject.add(subject);
+            } else if (subjectType.equals(SUBJECT_TYPE_CHOICE) && !subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE)) {
+                updatedSubject.add(subject);
             }
-            currentSubjects.add(selectedSubject);
-            System.out.println(subjectType + " 과목이 성공적으로 수정되었습니다.");
-        } else if (subjectChoice != 0) {
-            System.out.println("잘못된 입력입니다.");
+        }
+
+        currentSubjects.clear();
+        for (Subject newUpdatedsubject : updatedSubject) {
+            currentSubjects.add(newUpdatedsubject);
+        }
+        while (true) {
+            System.out.print("새로 추가할 과목 번호를 입력하세요 (종료: 0): ");
+            int subjectChoice = sc.nextInt();
+
+            if (subjectChoice == 0) {
+                break;
+            }
+
+            if (subjectChoice > 0 && subjectChoice <= subjects.size()) {
+                Subject selectedSubject = subjects.get(subjectChoice - 1);
+                currentSubjects.add(selectedSubject);
+                System.out.println(selectedSubject.getSubjectName() + " 과목이 성공적으로 수정되었습니다.");
+            } else {
+                System.out.println("잘못된 입력입니다.");
+            }
         }
     }
 
