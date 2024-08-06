@@ -243,13 +243,21 @@ public class CampManagementApplication {
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
-        for (Student student : studentStore) {
-            System.out.println("ID: " + student.getStudentId());
-            System.out.println("이름: " + student.getStudentName());
-            System.out.println("상태: " + student.getColors());
-            System.out.println("선택한 과목명 :" + student.getStudentSubjectArr().toString());
+
+        if (studentStore == null || studentStore.isEmpty()) { // 데이터가 없을 경우
+            System.out.println("저장 없음");
+        } else {
+            for (Student student : studentStore) {
+                System.out.println("ID: " + student.getStudentId());
+                System.out.println("이름: " + student.getStudentName());
+                System.out.println("상태: " + student.getColors());
+                System.out.println("선택한 과목명 :" + student.getStudentSubjectArr().toString());
+                System.out.println("--------------------------");
+            }
+            System.out.println("\n수강생 목록 조회 성공!");
         }
-        System.out.println("\n수강생 목록 조회 성공!");
+
+
     }
 
     private static void displayScoreView() throws BadException {
@@ -260,7 +268,8 @@ public class CampManagementApplication {
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 메인 화면 이동");
+            System.out.println("4. 수강생 과목 별 평균 등급 조회");
+            System.out.println("5. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -268,7 +277,8 @@ public class CampManagementApplication {
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> flag = false; // 메인 화면 이동
+                case 4 -> average();
+                case 5 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -417,9 +427,14 @@ public class CampManagementApplication {
 
         if (round < 0) { throw new BadException("roundRangeError");}
 
+<<<<<<< HEAD
         for (Score score : scoreStore) {
             if (score.getStudentId().equals(studentId) &&
                     score.getSubjectId().equals(studentSubject)) { grade = score.getGrade();}
+=======
+        for (Score score : scoreStore){
+
+>>>>>>> 2100dba (ãã평균등급 조회)
         }
 
         // 기능 구현 (조회할 특정 과목)
@@ -431,6 +446,48 @@ public class CampManagementApplication {
 
         // 기능 구현
         System.out.println("\n등급 조회 성공!");
+    }
+
+    private static void average() throws BadException {
+
+
+        System.out.println("평균 점수 조회");
+        // 전체 수강생  과목별 평균 등급
+        String studentId = getStudentId(); // 학생 번호
+        Score score = new Score(sequence(""));
+        Student student = null; // 이 부분 더 깔끔하게 못하나
+        for(Student student1 : studentStore) {
+            if(student1.getStudentId().equals(studentId)) {
+                student = student1;
+                break;
+            }
+        }
+        List<Subject> subjects = student.getStudentSubjectArr();
+
+        System.out.println("수강생 명 : " + student.getStudentName());
+
+        for(Subject subject : subjects) {
+            int totalScore = 0; // 총 점수
+            int count = 0; // 회차 계산용
+
+            for(Score score1 : scoreStore) {
+                if(score1.getSubjectId().equals(subject.getSubjectId()) && score1.getStudentId().equals(studentId)) {
+                    totalScore += score1.getScore();
+                    count++;
+                }
+            }
+
+            if(count > 0){
+                int averageScore = totalScore / count;
+                score.setScore(averageScore); // 점수 먼저 등록 후 등급
+                char averageGrade = score.setGrade(subject.getSubjectType());
+
+                System.out.println("------------------");
+                System.out.println("과목명 : " + subject.getSubjectName());
+                System.out.println("평균 등급 : " + averageGrade);
+            }
+        }
+
     }
 
 }
