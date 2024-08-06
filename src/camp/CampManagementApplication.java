@@ -567,20 +567,25 @@ public class CampManagementApplication {
             }
         }
         System.out.println("상태가 " + selectdeColor + "인 수강생 목록");
-        boolean found = false;
+        boolean found = false; // 선택된 상태의 수강생이 존재하는지 추적하기 위해 found 변수를 false로 초기화
+        int index = 0;
 
-        for (Student student : studentStore) {
-            if (student.getColors().equals(selectdeColor)) {
+        while (index < studentStore.size()) { // 현재 인덱스에 해당하는 student객체를 가져옴
+            Student student = studentStore.get(index);
+            if (student.getColors().equals(selectdeColor)) { // 현재 student 객체의 상태가 선택된 상태와 일치하는지 확인
                 System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
-                found = true;
+                // 일치하는 경우, 수강생의 ID와 이름을 출력
+                found = true; // 일치하는 수강생이 있다는 것을 알기 위해 true로 설정
             }
-            if (!found) {
-                System.out.println("해당 상태의 수강생이 존재하지 않습니다.");
-            } else {
-                System.out.println("상태별 수강생 조회 성공");
-            }
+            index++; // 다음 인덱스 이동
+        }
+        if (!found) { // 일치하는 수강생을 찾지 못한경우
+            System.out.println("해당 상태의 수강생이 존재하지 않습니다.");
+        } else { // 일치하는 수강생을 찾지 못한경우가 아니면 메세지 출력
+            System.out.println("상태별 수강생 조회 성공");
         }
     }
 }
+
 
 
