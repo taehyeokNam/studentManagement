@@ -21,7 +21,6 @@ public class CampManagementApplication {
     private static List<Student> studentStore;
     private static List<Subject> subjectStore;
     private static List<Score> scoreStore;
-//    private static Map<String, Object> studentInformation;
 
     // 과목 타입
     private static final String SUBJECT_TYPE_MANDATORY = "MANDATORY";
