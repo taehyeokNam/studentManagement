@@ -798,5 +798,5 @@ public class CampManagementApplication {
         scoreStore.removeIf(score -> score.getStudentId().equals(studentId));
     }
 }
-//macbook test
+//macbook test2
 
