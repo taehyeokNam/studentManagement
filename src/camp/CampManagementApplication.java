@@ -798,6 +798,6 @@ public class CampManagementApplication {
         scoreStore.removeIf(score -> score.getStudentId().equals(studentId));
     }
 }
-
+//git push test1
 
 
