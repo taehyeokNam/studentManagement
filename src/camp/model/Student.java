@@ -52,11 +52,6 @@ public class Student {
     public StudentStatus getStatus() {
         return status;
     }
-
-
-    public void addColor(StudentStatus status) {
-        this.status = status;
-}
  // Setter
 
     public void setStudentSubjectArr(Subject subject) {
