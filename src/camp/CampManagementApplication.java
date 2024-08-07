@@ -798,6 +798,5 @@ public class CampManagementApplication {
         scoreStore.removeIf(score -> score.getStudentId().equals(studentId));
     }
 }
-//git push test2
-
+//git push test3
 
