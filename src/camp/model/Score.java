@@ -52,27 +52,7 @@ public class Score {
         this.subjectId = subjectId;
     }
 
-    public  char setGrade (String subjectType) {
-        switch (subjectType) {
-            case "MANDATORY" :
-                if (score > 94 && score <= 100) grade = 'A';
-                else if (score >89 && score <= 94) grade = 'B';
-                else if (score > 79 && score <= 89) grade = 'C';
-                else if (score > 69 && score <= 79) grade = 'D';
-                else if (score > 59 && score <= 69) grade = 'F';
-                else grade = 'N';
-                break;
-            case "CHOICE" :
-                if (score > 89 && score <= 100) grade = 'A';
-                else if (score >79 && score <= 89) grade = 'B';
-                else if (score > 69 && score <= 79) grade = 'C';
-                else if (score > 59 && score <= 69) grade = 'D';
-                else if (score > 49 && score <= 59) grade = 'F';
-                else grade = 'N';
-                break;
-            default:
-        }
-        return grade;
+    public void setGrade(char grade) {
+        this.grade = grade;
     }
-
 }
