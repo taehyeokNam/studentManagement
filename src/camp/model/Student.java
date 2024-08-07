@@ -60,12 +60,11 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student{" +
-                "studentId='" + studentId + '\'' +
-                ", studentName='" + studentName + '\'' +
-                ", subjectArray=" + subjectArray +
-                ", status=" + status +
-                '}';
+        return "\n" +
+                "고유 번호 : " + studentId + "\n" +
+                "이름 : " + studentName + "\n" +
+                "과목 목록 : " + subjectArray + "\n" +
+                "상태 : " + status;
     }
 
     public void setMandatorySubjectArr(String subjectId) {
