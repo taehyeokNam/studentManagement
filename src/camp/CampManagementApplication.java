@@ -21,7 +21,7 @@ public class CampManagementApplication {
     private static List<Student> studentStore;
     private static List<Subject> subjectStore;
     private static List<Score> scoreStore;
-    private static Map<String, Object> studentInformation;
+//    private static Map<String, Object> studentInformation;
 
     // 과목 타입
     private static String SUBJECT_TYPE_MANDATORY = "MANDATORY";
@@ -98,7 +98,7 @@ public class CampManagementApplication {
                 )
         );
         scoreStore = new ArrayList<>();
-        studentInformation = new HashMap<>();
+//        studentInformation = new HashMap<>();
     }
 
     // index 자동 증가
@@ -248,9 +248,6 @@ public class CampManagementApplication {
                 System.out.println("수강생 등록 성공!\n");
                 flag = false;
             }
-        }
-        for (Student studentInformationSave : studentStore) {
-            studentInformation.put(sequence, studentInformationSave);
         }
     }
 
@@ -459,40 +456,22 @@ public class CampManagementApplication {
         System.out.println("\n등급 조회 성공!");
     }
 
-    private static void studentInformation() {
-        boolean value = true;
-        do {
-            System.out.println("조회할 수강생 고유 번호를 입력해주세요");
-            String studentUniqueNumber = sc.next();
-            Object informationSaveValue = studentInformation.get(studentUniqueNumber);
-            if (informationSaveValue == null) {
-                System.out.println("고유 번호가 존재하지 않습니다. 계속 조회 해보시겠습니까? 1:y , 2:n");
-                if (sc.hasNext()) {
-                    String next = sc.next();
-                    if (next.equals("y")) {
-                        value = false;
-                    } else {
-                        value = true;
-                        break;
-                    }
-                }
-            } else {
-                System.out.println("학생 상세조회 = " + informationSaveValue);
-                value = true;
+    private static void studentInformation() throws BadException{
+
+        String next = getStudentId();
+        for (Student student : studentStore){
+            if (student.getStudentId().equals(next)){
+                System.out.println("student = " + student);
+                break;
             }
-        } while (!value);
+        }
     }
 
 
-    private static void editStudentInformation() {
+    private static void editStudentInformation() throws BadException{
         System.out.println("수정할 수강생 고유 번호를 입력해주세요");
-        String studentUniqueNumber = sc.next();
-        Student student = (Student) studentInformation.get(studentUniqueNumber);
+        String studentUniqueNumber = getStudentId();
 
-        if (student == null) {
-            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
-            return;
-        }
 
         boolean editing = true;
         while (editing) {
@@ -510,7 +489,7 @@ public class CampManagementApplication {
                 case 1:
                     System.out.print("새로운 이름을 입력하세요: ");
                     String newName = sc.nextLine();
-                    student.setStudentName(newName);
+
                     System.out.println("이름이 성공적으로 수정되었습니다.");
                     break;
                 case 2:
@@ -634,21 +613,21 @@ public class CampManagementApplication {
     }
 
 
-    private static void studentRemove() throws BadException{
+    private static void studentRemove() throws BadException {
         System.out.println("삭제할 수강생 고유 번호를 입력해주세요");
         String studentUniqueNumber = sc.next();
-        Object informationSaveValue = studentInformation.get(studentUniqueNumber);
+        Object informationSaveValue = null; /*studentInformation.get(studentUniqueNumber);*/
 
         if (informationSaveValue != null) {
-            for (int i = 0; i < studentStore.size(); i++) {
-                if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)) {
+            for (Student student : studentStore)
+                if (student.getStudentId().equals(studentUniqueNumber)) {
                     System.out.println(informationSaveValue);
                     System.out.println("수강생을 삭제 하시겠습니까?(예:1 or 아니요:2");
                     int next = sc.nextInt();
                     if (next == 1) {
-                        deleteScore(studentStore.get(i).getStudentId());
-                        studentInformation.remove(studentUniqueNumber);
-                        studentStore.remove(i);
+                        deleteScore(student.getStudentId());
+//                        studentInformation.remove(studentUniqueNumber);
+                        studentStore.remove(student);
                         System.out.println("삭제 완료!");
                         break;
                     } else if (next == 2) {
@@ -656,21 +635,8 @@ public class CampManagementApplication {
                         break;
                     }
                 }
-            }
         } else {
-            if (informationSaveValue == null) {
-                System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
-                return;
-            } else {
-                studentInformation.remove(studentUniqueNumber);
-                for (int i = 0; i < studentStore.size(); i++) {
-                    if (studentStore.get(i).getStudentId().equals(studentUniqueNumber)) {
-                        studentStore.remove(i);
-                        System.out.println("삭제 완료!");
-                        break;
-                    }
-                }
-            }
+            System.out.println("해당 고유 번호의 수강생이 존재하지 않습니다.");
         }
     }
 
@@ -822,10 +788,9 @@ public class CampManagementApplication {
 
     // 수강생 정보 삭제 시 수강생이 가진 점수 모두 삭제
     private static void deleteScore(String studentId) throws BadException {
-        for(Score score : scoreStore) {
-            if(score.getStudentId().equals(studentId)) {
-                int index = scoreStore.indexOf(score);
-                scoreStore.remove(index);
+        for (Score score : scoreStore) {
+            if (score.getStudentId().equals(studentId)) {
+                scoreStore.remove(score);
             }
         }
     }
