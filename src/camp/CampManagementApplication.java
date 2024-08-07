@@ -21,7 +21,6 @@ public class CampManagementApplication {
     private static List<Student> studentStore;
     private static List<Subject> subjectStore;
     private static List<Score> scoreStore;
-//    private static Map<String, Object> studentInformation;
 
     // 과목 타입
     private static final String SUBJECT_TYPE_MANDATORY = "MANDATORY";
@@ -381,6 +380,7 @@ public class CampManagementApplication {
 
         String subjectName = "";
         String subjectType = "";
+
         for (Subject subject : subjectStore) {
             if (subject.getSubjectId().equals(subjectId)) {
                 subjectName = subject.getSubjectName();
@@ -400,7 +400,6 @@ public class CampManagementApplication {
         newScore.setGrade(grade);
 
         System.out.println("시험 점수를 등록합니다...");
-
 
         // 기능 구현
         scoreStore.add(newScore);
@@ -453,6 +452,7 @@ public class CampManagementApplication {
                 grade = score.getGrade();
 
                 // 기능 구현 (조회할 특정 과목)
+                System.out.println("회차별 등급을 조회합니다...");
                 System.out.println("==============================");
                 System.out.println("회차 = " + round++);
                 System.out.println("등급 = " + grade);
@@ -474,7 +474,6 @@ public class CampManagementApplication {
             }
         }
     }
-
 
     private static void editStudentInformation() throws BadException{
         System.out.println("수정할 수강생 고유 번호를 입력해주세요");
