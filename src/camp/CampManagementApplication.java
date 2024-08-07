@@ -2,9 +2,9 @@ package camp;
 
 import camp.model.Score;
 import camp.model.Student;
+import camp.model.StudentStatus;
 import camp.model.Subject;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -188,13 +188,16 @@ public class CampManagementApplication {
             System.out.print("상태 종류를 선택하세요: 1) Green, 2) Red, 3) Yellow");
             int color = sc.nextInt();
             if (color == 1) {
-                student.setColors("Green");
+                StudentStatus status = StudentStatus.Green;
+                student.setStatus(status);
                 break;
             } else if (color == 2) {
-                student.setColors("Red");
+                StudentStatus status = StudentStatus.Red;
+                student.setStatus(status);
                 break;
             } else if (color == 3) {
-                student.setColors("Yellow");
+                StudentStatus status = StudentStatus.Red;
+                student.setStatus(status);
             } else {
                 System.out.println("잘못된 입력입니다.");
             }
@@ -260,7 +263,7 @@ public class CampManagementApplication {
             for (Student student : studentStore) {
                 System.out.println("ID: " + student.getStudentId());
                 System.out.println("이름: " + student.getStudentName());
-                System.out.println("상태: " + student.getColors());
+                System.out.println("상태: " + student.getStatus());
                 System.out.println("선택한 과목명 :" + student.getStudentSubjectArr().toString());
                 System.out.println("--------------------------");
             }
@@ -520,21 +523,26 @@ public class CampManagementApplication {
             System.out.print("새로운 상태를 선택하세요 (1: Green, 2: Red, 3: Yellow, 종료: 0): ");
             int statusChoice = sc.nextInt();
             sc.nextLine();  // consume the newline
+            StudentStatus status;
 
             if (statusChoice == 0) {
                 break;
             } else {
                 switch (statusChoice) {
+
                     case 1:
-                        student.setColors("Green");
+                        status = StudentStatus.Green;
+                        student.setStatus(status);
                         System.out.println("상태가 Green으로 변경되었습니다.");
                         break;
                     case 2:
-                        student.setColors("Red");
+                        status = StudentStatus.Red;
+                        student.setStatus(status);
                         System.out.println("상태가 Red로 변경되었습니다.");
                         break;
                     case 3:
-                        student.setColors("Yellow");
+                        status = StudentStatus.Yellow;
+                        student.setStatus(status);
                         System.out.println("상태가 Yellow로 변경되었습니다.");
                         break;
                     default:
@@ -643,24 +651,24 @@ public class CampManagementApplication {
     private static void studentBYColor() {
         System.out.println("조회할 학생의 상태를 선택하세요 (1: Green, 2: Red, 3: Yellow: )");
         int statusChoice = sc.nextInt();
-        String selectedColor = "";
+        StudentStatus status;
 
         switch (statusChoice) {
-            case 1 -> selectedColor = "Green";
-            case 2 -> selectedColor = "Red";
-            case 3 -> selectedColor = "Yellow";
+            case 1 -> status = StudentStatus.Green;
+            case 2 -> status = StudentStatus.Red;
+            case 3 -> status = StudentStatus.Yellow;
             default -> {
                 System.out.println("잘못된 입력입니다.");
                 return;
             }
         }
-        System.out.println("상태가 " + selectedColor + "인 수강생 목록");
+        System.out.println("상태가 " + status + "인 수강생 목록");
         boolean found = false; // 선택된 상태의 수강생이 존재하는지 추적하기 위해 found 변수를 false로 초기화
         int index = 0;
 
         while (index < studentStore.size()) { // 현재 인덱스에 해당하는 student객체를 가져옴
             Student student = studentStore.get(index);
-            if (student.getColors().equals(selectedColor)) { // 현재 student 객체의 상태가 선택된 상태와 일치하는지 확인
+            if (student.getStatus().equals(status)) { // 현재 student 객체의 상태가 선택된 상태와 일치하는지 확인
                 System.out.println("ID: " + student.getStudentId() + " 이름: " + student.getStudentName());
                 // 일치하는 경우, 수강생의 ID와 이름을 출력
                 found = true; // 일치하는 수강생이 있다는 것을 알기 위해 true로 설정
@@ -711,13 +719,19 @@ public class CampManagementApplication {
     }
 
     public static void studentMandatoryAverage() {
-        Map<Integer, String> statusMap = new HashMap<>();
-        statusMap.put(0, "Green");
-        statusMap.put(1, "Yellow");
-        statusMap.put(2, "Red");
+        System.out.println("조회할 수강생들의 상태를 입력하시오... (1: Green / 2: Red / 3: Yellow)");
+        int statusChoice = sc.nextInt();
+        StudentStatus status;
 
-        System.out.println("조회할 수강생들의 상태를 입력하시오... (0: Green / 1: Yellow / 2: Red)");
-        String status = statusMap.get(sc.nextInt());
+        switch (statusChoice) {
+            case 1 -> status = StudentStatus.Green;
+            case 2 -> status = StudentStatus.Red;
+            case 3 -> status = StudentStatus.Yellow;
+            default -> {
+                System.out.println("잘못된 입력입니다.");
+                return;
+            }
+        }
 
         System.out.println(status + "상태 수강생들의 필수과목 평균 등급 조회...");
         for (Subject subject : subjectStore) {
@@ -728,7 +742,7 @@ public class CampManagementApplication {
             if (subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)) {
                 for (Student student : studentStore) {
                     // 특정 상태 수강생들
-                    if (student.getColors().equals(status)) {
+                    if (student.getStatus().equals(status)) {
                         studentCount++;
                         for (Score score : scoreStore) {
                             if (score.getSubjectId().equals(subject.getSubjectId())) {

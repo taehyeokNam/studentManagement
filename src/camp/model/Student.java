@@ -8,10 +8,10 @@ public class Student {
     private String studentId;
     private String studentName;
     private List<Subject> subjectArray;
-    private String colors;
+    private StudentStatus status;
 
-    public void setColors(String colors) {
-        this.colors = colors;
+    public void setStatus(StudentStatus colors) {
+        this.status = colors;
     }
     private List<String> mandatorySubjectArr = new ArrayList<>();
 
@@ -49,13 +49,13 @@ public class Student {
         return choiceSubjectArr;
     }
 
-    public String getColors() {
-        return colors;
+    public StudentStatus getStatus() {
+        return status;
     }
 
 
-    public void addColor(String color) {
-        this.colors = color;
+    public void addColor(StudentStatus status) {
+        this.status = status;
 }
  // Setter
 
@@ -69,7 +69,7 @@ public class Student {
                 "studentId='" + studentId + '\'' +
                 ", studentName='" + studentName + '\'' +
                 ", subjectArray=" + subjectArray +
-                ", colors=" + colors +
+                ", status=" + status +
                 '}';
     }
 
