@@ -17,6 +17,7 @@ public class Student {
 
     private List<String> choiceSubjectArr = new ArrayList<>();
 
+    public  Student() {}
     public Student(String seq, String studentName, List<Subject> subjectArray) {
         this.studentId = seq;
         this.studentName = studentName;
